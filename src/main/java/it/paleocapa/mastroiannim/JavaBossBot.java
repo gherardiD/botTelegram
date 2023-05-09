@@ -1,5 +1,7 @@
 package it.paleocapa.mastroiannim;
 
+import java.util.LinkedList;
+
 import org.slf4j.Logger;
 import org.slf4j.LoggerFactory;
 import org.springframework.stereotype.Service;
@@ -43,19 +45,44 @@ public class JavaBossBot extends TelegramLongPollingBot {
 
 	@Override
 	public void onUpdateReceived(Update update) {
-		if (update.hasMessage() && update.getMessage().hasText()) {
-			
-			long chatId = update.getMessage().getChatId();
-			
-			SendMessage message = new SendMessage();
-			message.setChatId(chatId);
-			message.setText("Benvenuto! Come posso aiutarti?");
-			
-			try {
-				execute(message);
-			} catch (TelegramApiException e) {
-				LOG.error(e.getMessage());
-			}
-		}
+		//update è l'input dell'utente
+		String msg = update.getMessage().getText();
+		String chatId=update.getMessage().getChatId().toString();
+        SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        
+        
+        LinkedList<String> prodotti = new LinkedList<String>();
+        prodotti.add("piadina");
+        prodotti.add("panino");
+        prodotti.add("CocaCola");
+        
+        boolean stoOrdinando = false;
+        LinkedList <String> list = new LinkedList<String>();
+        if(msg.equals("/menu")){
+            sendMessage.setText(
+                "menu:\n piadina $2\n panino $1.5\n CocaCola $1"
+            );
+        }else if(msg.equals("/order")){
+            stoOrdinando=true;
+            sendMessage.setText("cosa vuoi odrinare?");
+        }else if(msg.equals("/stop")){
+            stoOrdinando=false;
+            sendMessage.setText(list.toString());
+        }else if(prodotti.contains(msg)){
+            list.add(msg);
+            sendMessage.setText("poi?");
+        }
+
+        
+        /*SendMessage sendMessage = new SendMessage();
+        sendMessage.setChatId(chatId);
+        sendMessage.setText(msg);*/
+        try {
+            execute(sendMessage);
+        } catch (TelegramApiException e) {
+           // gestione errore in invio
+           e.printStackTrace();
+        }
 	}
 }
