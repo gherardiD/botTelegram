@@ -26,7 +26,7 @@ public class TelegramBotConfig {
     public TelegramLongPollingBot telegramBot() {
         LOG.info(botToken);
         LOG.info(botUsername);
-        return JavaBossBot.getJavaBossBotInstance(botUsername, botToken);
+        return JavaBarBot.getJavaBossBotInstance(botUsername, botToken);
     }
 
     @Bean
